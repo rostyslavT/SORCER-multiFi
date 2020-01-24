@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import java.rmi.RemoteException;
 
-public class OrderImpl implements Order {
+public class OrderImpl implements Order, OrderService {
 
     public OrderDTO placeOrder(List<PlateDTO> plates, List<DrinkDTO> drinks, int tableNumber) throws RemoteException {
         OrderDTO orderDTO = new OrderDTO(plates, drinks, tableNumber, false);
@@ -53,5 +53,30 @@ public class OrderImpl implements Order {
             System.err.println("Order is already payed.");
         }
     }
+
+    public Context placeOrder(Context context) throws RemoteException, ContextException {
+        OrderDTO o = OrderDTO.getOrder(context);
+		OrderDTO placedOrder = placeOrder(o.getPlates(), o.getDrinks(), o.getTableNumber());
+		context.putValue("order/placed", placedOrder);
+		return context;
+    }
+
+    public Context addDishesToOrder(Context context) throws RemoteException, ContextException {
+        List<OrderDTO> ol = new ArrayList<>();
+		for (OrderDTO o : OrderDTO.getOrderDTOList() {
+			if (o.getPlates() != null && !o.getPlates().isEmpty() ol.add(o);
+		}
+
+		context.putValue("addDishesToOrder", ol);
+		return context;
+    }
+
+    public Context payForOrder(Context context) throws RemoteException, ContextException {
+        OrderDTO o = OrderDTO.getOrder(context);
+		boolean isPayed = payForOrder(o);
+		context.putValue("order/payed", isPayed);
+		return context;
+    }
+
 
 }
