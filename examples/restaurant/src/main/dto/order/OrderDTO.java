@@ -56,4 +56,41 @@ public class OrderDTO {
     public static List<OrderDTO> getOrderDTOList() {
         return orderDTOList;
     }
+
+    static public OrderDTO getOrder(Context context) throws ContextException {
+		OrderDTO o = new OrderDTO();
+		try {
+
+            o.getDrinks().addAll((List<DrinkDTO>)context.getValue("drinks"));
+            o.getPlates().addAll((List<PlateDTO>)context.getValue("plates"));
+            o.tableNumber = (int)context.getValue("tableNumber");
+            o.payed = (boolean)context.getValue("payed");
+
+		} catch (RemoteException e) {
+			throw new ContextException(e);
+		}
+		return o;
+	}
+
+	static public Context getContext(OrderDTO order) throws ContextException {
+		Context cxt = new ServiceContext();
+		cxt.putValue("tableNumber", order.getTableNumber());
+		cxt.putValue("payed", order.isPayed());
+		cxt.putValue("drinks", order.getDrinks();
+		cxt.putValue("plates", order.getPlates());
+		return cxt;
+	}
+
+	public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        OrderDTO that = (OrderDTO) object;
+        return java.util.Objects.equals(tableNumber, that.tableNumber) &&
+                java.util.Objects.equals(payed, that.payed);
+    }
+
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tableNumber, payed);
+    }
 }
